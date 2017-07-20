@@ -30,15 +30,11 @@ class PGDraggingImageView: UIImageView {
     override init(image: UIImage!) {
         super.init(image: image)
         
-        self.isUserInteractionEnabled = true   //< w00000t!!!1
+        self.isUserInteractionEnabled = true
         let gestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
         self.addGestureRecognizer(gestureRecognizer)
-        
-        layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOffset = CGSize(width: 0, height: 3)
-        layer.shadowOpacity = 0.5
-        layer.shadowRadius = 2
-        layer.borderWidth = 2
+        layer.borderColor = UIColor.white.cgColor
+        layer.borderWidth = 0.5
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -48,32 +44,24 @@ class PGDraggingImageView: UIImageView {
         
     }
     
-    func handlePan(_ nizer: UIPanGestureRecognizer!) {
+    func handlePan(_ gesture: UIPanGestureRecognizer!) {
         
         self.layer.zPosition = 1
         
-        if nizer.state == UIGestureRecognizerState.began {
-            let locationInView = nizer.location(in: superview)
+        if gesture.state == UIGestureRecognizerState.began {
+            let locationInView = gesture.location(in: superview)
             initialPosition = self.frame
             dragStartPositionRelativeToCenter = CGPoint(x: locationInView.x - center.x, y: locationInView.y - center.y)
-            
-            layer.shadowOffset = CGSize(width: 0, height: 20)
-            layer.shadowOpacity = 0.3
-            layer.shadowRadius = 6
             
             return
         }
         
-        if nizer.state == UIGestureRecognizerState.ended {
+        if gesture.state == UIGestureRecognizerState.ended {
             
             self.layer.zPosition = 0
             
-            let locationInView = nizer.location(in: superview)
+            let locationInView = gesture.location(in: superview)
             dragStartPositionRelativeToCenter = nil
-            
-            layer.shadowOffset = CGSize(width: 0, height: 3)
-            layer.shadowOpacity = 0.5
-            layer.shadowRadius = 2
             
             if delegate != nil {
                 
@@ -83,7 +71,7 @@ class PGDraggingImageView: UIImageView {
             return
         }
         
-        let locationInView = nizer.location(in: superview)
+        let locationInView = gesture.location(in: superview)
         
         UIView.animate(withDuration: 0.1) {
             self.center = CGPoint(x: locationInView.x - self.dragStartPositionRelativeToCenter!.x,

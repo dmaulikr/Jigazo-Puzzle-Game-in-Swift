@@ -32,6 +32,8 @@ class PGViewController: UIViewController,DraggingImageViewProtocol,UIGestureReco
         //** start puzzle by default
         showStartImage()
         
+        UIDevice.current.setValue(UIInterfaceOrientation.landscapeLeft.rawValue, forKey: "orientation")
+        
     }
     
     
@@ -55,7 +57,14 @@ class PGViewController: UIViewController,DraggingImageViewProtocol,UIGestureReco
     
     func showStartImage() {
         
+        //**Clear screen
+        let subViews = self.view.subviews
+        for subview in subViews{
+            subview.removeFromSuperview()
+        }
+        
         startImageView.frame = self.view.bounds
+        startImageView.contentMode = .scaleAspectFit
         self.view.addSubview(startImageView)
         
         indicator = PGProgressIndicator(inview:self.view,loadingViewColor: UIColor.lightGray, indicatorColor: UIColor.black, msg: "")
@@ -84,12 +93,6 @@ class PGViewController: UIViewController,DraggingImageViewProtocol,UIGestureReco
     //** Start the puzzle
     
     func startPuzzle(image:UIImage) {
-        
-        //**Clear screen
-        let subViews = self.view.subviews
-        for subview in subViews{
-            subview.removeFromSuperview()
-        }
 
             self.imageArray.removeAll()
             self.startImageView.removeFromSuperview()
@@ -138,14 +141,21 @@ extension PGViewController {
         var allImageViews = self.view.subviews.filter{$0 is PGDraggingImageView}.shuffled()
         
         let width = Double(image.size.width/CGFloat(PGConstants.gridColumnCount))
-        let height = Double(((UIScreen.main.bounds.height)/CGFloat(PGConstants.gridRowCount)))
+        let height = Double((image.size.height/CGFloat(PGConstants.gridRowCount)))
         var p  = 0.0
         var q  = 0.0
         
         for i in 1 ... PGConstants.totalGridsCount {
             
             let imageView = allImageViews [i-1] as! PGDraggingImageView
-            let rect = CGRect(x: width*p, y: height*q, width: width, height: height)
+            
+            //**Adding margin
+            //let marginOffest = 10
+            //let marginYoffset = Double(UIScreen.main.bounds.height-image.size.height)/2
+            let positionX = width*p //+ Double(marginOffest)
+            let positionY = height*q //+ marginYoffset
+
+            let rect = CGRect(x: positionX, y: positionY, width: width, height: height)
             imageView.frame = rect
             
             print(rect)
@@ -179,7 +189,7 @@ extension PGViewController {
     func createImageGrid(image:UIImage) {
         
         let width = Double(image.size.width/CGFloat(PGConstants.gridColumnCount))
-        let height = Double(((UIScreen.main.bounds.height)/CGFloat(PGConstants.gridRowCount)))
+        let height = Double((image.size.height/CGFloat(PGConstants.gridRowCount)))
         var p  = 0.0
         var q  = 0.0
         
@@ -187,7 +197,14 @@ extension PGViewController {
             
             let image = imageArray[i-1] as UIImage
             let imageView = PGDraggingImageView(image:image)
-            let rect = CGRect(x: width*p, y: height*q, width: width, height: height)
+            
+            //**Adding margin
+            //let marginOffest = 10
+            //let marginYoffset = Double(UIScreen.main.bounds.height-image.size.height)/2
+            let positionX = width*p //+ Double(marginOffest)
+            let positionY = height*q //+ marginYoffset
+            
+            let rect = CGRect(x: positionX, y: positionY, width: width, height: height)
             
             print("\(i) -- \(rect)")
             

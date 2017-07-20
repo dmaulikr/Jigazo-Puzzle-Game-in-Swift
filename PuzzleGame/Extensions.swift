@@ -89,7 +89,7 @@ extension UIImage {
         
         var imageArray = [UIImage]()
         let width = Double(self.size.width/4)
-        let height = Double(UIScreen.main.bounds.height/3)
+        let height = Double(self.size.height/3)
         var p  = 0.0
         var q  = 0.0
         
